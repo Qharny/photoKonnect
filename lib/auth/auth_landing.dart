@@ -438,6 +438,7 @@ class _AuthLandingScreenState extends State<AuthLandingScreen>
     );
   }
 
+
   void _navigateToPhotographerAuth() {
     _showSnackBar('Navigating to photographer authentication...');
     // Navigate to photographer login/signup
