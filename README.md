@@ -7,8 +7,6 @@ PhotoConnect is a Flutter + Supabase-powered mobile platform that connects clien
 
 ## 🚀 Screenshots
 
-> *(Include UI screenshots here)*
-
 | Client View | Photographer View | Booking Flow |
 |-------------|-------------------|--------------|
 | ![client](screenshots/client.png) | ![photographer](screenshots/photographer.png) | ![booking](screenshots/booking.png) |
