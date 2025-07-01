@@ -1,0 +1,1 @@
+// Handle Supabase integration here

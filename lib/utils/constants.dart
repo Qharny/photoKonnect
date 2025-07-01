@@ -1,0 +1,1 @@
+// Define constants (e.g., image paths, URLs)
