@@ -1,0 +1,2 @@
+url = 'https://xkdzovdfdhgagormwwoz.supabase.co'
+anon_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhrZHpvdmRmZGhnYWdvcm13d296Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3Nzc3NjcsImV4cCI6MjA2MTM1Mzc2N30.konG1gv3rsNHD_jJ64qfaWEwezFLAlNjW3iRZvlg_Gc'
