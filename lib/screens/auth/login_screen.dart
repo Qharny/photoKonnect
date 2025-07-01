@@ -3,7 +3,7 @@ import 'package:photoconnect/screens/auth/register.dart';
 import '../../theme/app_color.dart';
 import '../../widgets/custom_button.dart';
 import '../../services/supabase_service.dart';
-import '../../utils/custom_page_route.dart';
+import '../../routes/custom_page_route.dart';
 import '../home_screen.dart';
 
 class LoginScreen extends StatefulWidget {

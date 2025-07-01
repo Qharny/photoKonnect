@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/animated_logo.dart';
 import '../services/supabase_service.dart';
-import '../utils/custom_page_route.dart';
+import '../routes/custom_page_route.dart';
 import 'auth/login_screen.dart';
 import 'home_screen.dart';
 import 'onboarding_screen.dart';
