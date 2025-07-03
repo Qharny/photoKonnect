@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../screens/onboarding_screen.dart';
+import '../screens/auth/login.dart';
+import '../screens/onboarding/onboarding_screen.dart';
 
 enum RouteAnimation {
   slideRight,
@@ -54,7 +55,7 @@ class AppRoutes {
     ),
     login: RouteConfig(
       path: login,
-      builder: (context) => const LoginPage(),
+      builder: (context) =>  LoginScreen(),
       animation: RouteAnimation.fade,
       duration: const Duration(milliseconds: 400),
     ),
@@ -495,13 +496,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Placeholder Pages (replace with your actual pages)
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const Scaffold(body: Center(child: Text('Login Page')));
-}
+
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

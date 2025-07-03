@@ -46,7 +46,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
 
-            // PageView with GIFs
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
@@ -185,8 +184,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _finishOnboarding() {
-    // Navigate to main app or save onboarding completion
-    Navigator.of(context).pushReplacementNamed('/home');
+    Navigator.of(context).pushReplacementNamed('/login');
   }
 }
 
