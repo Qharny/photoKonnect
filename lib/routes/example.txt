@@ -1,0 +1,8 @@
+// Navigate with animation
+NavigationService.navigateTo(AppRoutes.profile);
+
+// Replace current route
+NavigationService.navigateAndReplace(AppRoutes.home);
+
+// Go back
+NavigationService.goBack();

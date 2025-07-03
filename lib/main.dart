@@ -4,14 +4,12 @@ import 'package:photoconnect/screens/home_screen.dart';
 import 'package:photoconnect/screens/onboarding_screen.dart';
 import 'package:photoconnect/screens/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Supabase
   await Supabase.initialize(
     url: 'https://xkdzovdfdhgagormwwoz.supabase.co',
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhrZHpvdmRmZGhnYWdvcm13d296Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3Nzc3NjcsImV4cCI6MjA2MTM1Mzc2N30.konG1gv3rsNHD_jJ64qfaWEwezFLAlNjW3iRZvlg_Gc'
