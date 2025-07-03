@@ -7,9 +7,9 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: AppColors.offWhite,
-    primaryColor: AppColors.primaryBlue,
+    primaryColor: AppColors.primary,
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppColors.primaryBlue,
+      backgroundColor: AppColors.primary,
       foregroundColor: Colors.white,
     ),
     textTheme: const TextTheme(
@@ -18,14 +18,14 @@ class AppTheme {
       bodyLarge: TextStyle(color: AppColors.mediumGray),
     ),
     colorScheme: ColorScheme.light(
-      primary: AppColors.primaryBlue,
-      secondary: AppColors.accentPurple,
+      primary: AppColors.primary,
+      secondary: AppColors.secondary,
       error: AppColors.errorRed,
       surface: AppColors.offWhite,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primaryBlue,
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),
     ),
@@ -34,9 +34,9 @@ class AppTheme {
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     scaffoldBackgroundColor: Colors.black,
-    primaryColor: AppColors.primaryBlue,
+    primaryColor: AppColors.primary,
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppColors.primaryBlue,
+      backgroundColor: AppColors.primary,
       foregroundColor: Colors.white,
     ),
     textTheme: const TextTheme(
@@ -45,14 +45,14 @@ class AppTheme {
       bodyLarge: TextStyle(color: Colors.grey),
     ),
     colorScheme: ColorScheme.dark(
-      primary: AppColors.primaryBlue,
-      secondary: AppColors.accentPurple,
+      primary: AppColors.primary,
+      secondary: AppColors.secondary,
       error: AppColors.errorRed,
       surface: Colors.black,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primaryBlue,
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),
     ),

@@ -286,6 +286,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
+  flutter_gif:
+    dependency: "direct main"
+    description:
+      name: flutter_gif
+      sha256: b13d7e484e40685e9236ffbaddf012c2448a2e2c1ac48bed345184dd7bc87f88
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   flutter_launcher_icons:
     dependency: "direct main"
     description:
@@ -413,14 +421,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.3"
-  go_router:
+  gif_player:
     dependency: "direct main"
     description:
-      name: go_router
-      sha256: "02ff498f6279470ff7f60c998a69b872f26696ceec237c8402e63a2133868ddf"
+      name: gif_player
+      sha256: "5b0cb11f023c0987a9515a55f9e028a17231bf84bf4cc9ba6a5279f6965a7a7f"
       url: "https://pub.dev"
     source: hosted
-    version: "15.2.3"
+    version: "0.0.7"
   google_fonts:
     dependency: "direct main"
     description:

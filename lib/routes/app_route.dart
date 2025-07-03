@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../screens/onboarding_screen.dart';
+
 enum RouteAnimation {
   slideRight,
   slideLeft,
@@ -30,6 +32,7 @@ class RouteConfig {
 }
 
 class AppRoutes {
+  static const String onboard = '/onboard';
   static const String login = '/login';
   static const String home = '/';
   static const String registration = '/registration';
@@ -43,6 +46,12 @@ class AppRoutes {
 
   // Route configurations with different animations
   static final Map<String, RouteConfig> _routeConfigs = {
+    onboard: RouteConfig(
+      path: onboard,
+      builder: (context) => const OnboardingScreen(),
+      animation: RouteAnimation.fade,
+      duration: const Duration(milliseconds: 500),
+    ),
     login: RouteConfig(
       path: login,
       builder: (context) => const LoginPage(),
@@ -108,7 +117,7 @@ class AppRoutes {
   static Map<String, WidgetBuilder> get routes {
     return Map.fromEntries(
       _routeConfigs.entries.map(
-            (entry) => MapEntry(
+        (entry) => MapEntry(
           entry.key,
           entry.value.requiresAuth
               ? (context) => AuthWrapper(child: entry.value.builder(context))
@@ -132,8 +141,10 @@ class AppRoutes {
       );
     }
 
-    Widget page = routeConfig.builder(settings.arguments as BuildContext? ??
-        NavigationService.navigatorKey.currentContext!);
+    Widget page = routeConfig.builder(
+      settings.arguments as BuildContext? ??
+          NavigationService.navigatorKey.currentContext!,
+    );
 
     if (routeConfig.requiresAuth) {
       page = AuthWrapper(child: page);
@@ -153,13 +164,29 @@ class AppRoutes {
   }) {
     switch (animation) {
       case RouteAnimation.slideRight:
-        return SlideRoute(builder: builder, direction: SlideDirection.right, duration: duration);
+        return SlideRoute(
+          builder: builder,
+          direction: SlideDirection.right,
+          duration: duration,
+        );
       case RouteAnimation.slideLeft:
-        return SlideRoute(builder: builder, direction: SlideDirection.left, duration: duration);
+        return SlideRoute(
+          builder: builder,
+          direction: SlideDirection.left,
+          duration: duration,
+        );
       case RouteAnimation.slideUp:
-        return SlideRoute(builder: builder, direction: SlideDirection.up, duration: duration);
+        return SlideRoute(
+          builder: builder,
+          direction: SlideDirection.up,
+          duration: duration,
+        );
       case RouteAnimation.slideDown:
-        return SlideRoute(builder: builder, direction: SlideDirection.down, duration: duration);
+        return SlideRoute(
+          builder: builder,
+          direction: SlideDirection.down,
+          duration: duration,
+        );
       case RouteAnimation.fade:
         return FadeRoute(builder: builder, duration: duration);
       case RouteAnimation.scale:
@@ -174,14 +201,24 @@ class AppRoutes {
 
 // Navigation Service for global navigation
 class NavigationService {
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
   static Future<dynamic> navigateTo(String routeName, {Object? arguments}) {
-    return navigatorKey.currentState!.pushNamed(routeName, arguments: arguments);
+    return navigatorKey.currentState!.pushNamed(
+      routeName,
+      arguments: arguments,
+    );
   }
 
-  static Future<dynamic> navigateAndReplace(String routeName, {Object? arguments}) {
-    return navigatorKey.currentState!.pushReplacementNamed(routeName, arguments: arguments);
+  static Future<dynamic> navigateAndReplace(
+    String routeName, {
+    Object? arguments,
+  }) {
+    return navigatorKey.currentState!.pushReplacementNamed(
+      routeName,
+      arguments: arguments,
+    );
   }
 
   static void goBack() {
@@ -203,14 +240,19 @@ class SlideRoute extends PageRouteBuilder {
     required this.direction,
     this.duration = const Duration(milliseconds: 300),
   }) : super(
-    pageBuilder: (context, animation, secondaryAnimation) => builder(context),
-    transitionDuration: duration,
-    reverseTransitionDuration: duration,
-  );
+         pageBuilder: (context, animation, secondaryAnimation) =>
+             builder(context),
+         transitionDuration: duration,
+         reverseTransitionDuration: duration,
+       );
 
   @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child) {
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
     Offset begin;
     const Offset end = Offset.zero;
 
@@ -229,14 +271,12 @@ class SlideRoute extends PageRouteBuilder {
         break;
     }
 
-    final tween = Tween(begin: begin, end: end).chain(
-      CurveTween(curve: Curves.easeInOutCubic),
-    );
+    final tween = Tween(
+      begin: begin,
+      end: end,
+    ).chain(CurveTween(curve: Curves.easeInOutCubic));
 
-    return SlideTransition(
-      position: animation.drive(tween),
-      child: child,
-    );
+    return SlideTransition(position: animation.drive(tween), child: child);
   }
 }
 
@@ -248,18 +288,21 @@ class FadeRoute extends PageRouteBuilder {
     required this.builder,
     this.duration = const Duration(milliseconds: 300),
   }) : super(
-    pageBuilder: (context, animation, secondaryAnimation) => builder(context),
-    transitionDuration: duration,
-    reverseTransitionDuration: duration,
-  );
+         pageBuilder: (context, animation, secondaryAnimation) =>
+             builder(context),
+         transitionDuration: duration,
+         reverseTransitionDuration: duration,
+       );
 
   @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child) {
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
     return FadeTransition(
-      opacity: animation.drive(
-        CurveTween(curve: Curves.easeInOut),
-      ),
+      opacity: animation.drive(CurveTween(curve: Curves.easeInOut)),
       child: child,
     );
   }
@@ -273,18 +316,21 @@ class ScaleRoute extends PageRouteBuilder {
     required this.builder,
     this.duration = const Duration(milliseconds: 300),
   }) : super(
-    pageBuilder: (context, animation, secondaryAnimation) => builder(context),
-    transitionDuration: duration,
-    reverseTransitionDuration: duration,
-  );
+         pageBuilder: (context, animation, secondaryAnimation) =>
+             builder(context),
+         transitionDuration: duration,
+         reverseTransitionDuration: duration,
+       );
 
   @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child) {
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
     return ScaleTransition(
-      scale: animation.drive(
-        CurveTween(curve: Curves.elasticOut),
-      ),
+      scale: animation.drive(CurveTween(curve: Curves.elasticOut)),
       child: child,
     );
   }
@@ -298,24 +344,27 @@ class RotationRoute extends PageRouteBuilder {
     required this.builder,
     this.duration = const Duration(milliseconds: 300),
   }) : super(
-    pageBuilder: (context, animation, secondaryAnimation) => builder(context),
-    transitionDuration: duration,
-    reverseTransitionDuration: duration,
-  );
+         pageBuilder: (context, animation, secondaryAnimation) =>
+             builder(context),
+         transitionDuration: duration,
+         reverseTransitionDuration: duration,
+       );
 
   @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child) {
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
     return RotationTransition(
       turns: animation.drive(
-        Tween<double>(begin: 0.0, end: 1.0).chain(
-          CurveTween(curve: Curves.elasticOut),
-        ),
+        Tween<double>(
+          begin: 0.0,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.elasticOut)),
       ),
-      child: FadeTransition(
-        opacity: animation,
-        child: child,
-      ),
+      child: FadeTransition(opacity: animation, child: child),
     );
   }
 }
@@ -330,7 +379,8 @@ class AuthWrapper extends StatefulWidget {
   State<AuthWrapper> createState() => _AuthWrapperState();
 }
 
-class _AuthWrapperState extends State<AuthWrapper> with TickerProviderStateMixin {
+class _AuthWrapperState extends State<AuthWrapper>
+    with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -341,9 +391,10 @@ class _AuthWrapperState extends State<AuthWrapper> with TickerProviderStateMixin
       duration: const Duration(seconds: 1),
       vsync: this,
     );
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
     _controller.repeat(reverse: true);
   }
 
@@ -448,59 +499,69 @@ class MyApp extends StatelessWidget {
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
   @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Login Page')));
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Center(child: Text('Login Page')));
 }
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
   @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Home Page')));
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Center(child: Text('Home Page')));
 }
 
 class RegistrationScreen extends StatelessWidget {
   const RegistrationScreen({super.key});
   @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Registration Screen')));
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Center(child: Text('Registration Screen')));
 }
 
 class BillsPaymentsScreen extends StatelessWidget {
   const BillsPaymentsScreen({super.key});
   @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Bills Payments Screen')));
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Center(child: Text('Bills Payments Screen')));
 }
 
 class ResultsScreen extends StatelessWidget {
   const ResultsScreen({super.key});
   @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Results Screen')));
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Center(child: Text('Results Screen')));
 }
 
 class LecturerAssessmentScreen extends StatelessWidget {
   const LecturerAssessmentScreen({super.key});
   @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Lecturer Assessment Screen')));
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Center(child: Text('Lecturer Assessment Screen')));
 }
 
 class NotificationPage extends StatelessWidget {
   const NotificationPage({super.key});
   @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Notification Page')));
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Center(child: Text('Notification Page')));
 }
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
   @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Profile Page')));
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Center(child: Text('Profile Page')));
 }
 
 class EditProfilePage extends StatelessWidget {
   const EditProfilePage({super.key});
   @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Edit Profile Page')));
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Center(child: Text('Edit Profile Page')));
 }
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
   @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Settings Page')));
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Center(child: Text('Settings Page')));
 }
