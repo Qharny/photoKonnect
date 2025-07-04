@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:photoconnect/screens/auth/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../screens/auth/login.dart';
@@ -36,7 +37,7 @@ class AppRoutes {
   static const String onboard = '/onboard';
   static const String login = '/login';
   static const String home = '/';
-  static const String registration = '/registration';
+  static const String signup = '/signup';
   static const String paymentAndBills = '/payment-and-bills';
   static const String results = '/results';
   static const String lecturerAssessment = '/lecturer-assessment';
@@ -65,9 +66,9 @@ class AppRoutes {
       animation: RouteAnimation.slideRight,
       requiresAuth: true,
     ),
-    registration: RouteConfig(
-      path: registration,
-      builder: (context) => const RegistrationScreen(),
+    signup: RouteConfig(
+      path: signup,
+      builder: (context) => const SignUpScreen(),
       animation: RouteAnimation.slideUp,
       duration: const Duration(milliseconds: 350),
     ),
@@ -135,7 +136,7 @@ class AppRoutes {
       return _createAnimatedRoute(
         builder: (context) => Scaffold(
           appBar: AppBar(title: const Text('Page Not Found')),
-          body: Center(child: SvgPicture.asset("assets/svg/4042.svg")),
+          body: Center(child: SvgPicture.asset("assets/gif/404.svg")),
         ),
         animation: RouteAnimation.fade,
         duration: const Duration(milliseconds: 300),
@@ -503,13 +504,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       const Scaffold(body: Center(child: Text('Home Page')));
-}
-
-class RegistrationScreen extends StatelessWidget {
-  const RegistrationScreen({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const Scaffold(body: Center(child: Text('Registration Screen')));
 }
 
 class BillsPaymentsScreen extends StatelessWidget {
