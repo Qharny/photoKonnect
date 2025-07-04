@@ -300,7 +300,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           children: [
             _buildSocialButton(
               svgPath: 'assets/svg/google.svg',
-              // label: 'Google',
               onPressed: () {
                 // Handle Google login
                 _showSnackBar('Google login pressed');
@@ -308,7 +307,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
             ),
             _buildSocialButton(
               svgPath: 'assets/svg/x.svg',
-              // label: 'X',
               onPressed: () {
                 // Handle X login
                 _showSnackBar('X login pressed');
@@ -316,7 +314,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
             ),
             _buildSocialButton(
               svgPath: 'assets/svg/instagram.svg',
-              // label: 'Instagram',
               onPressed: () {
                 // Handle Instagram login
                 _showSnackBar('Instagram login pressed');
@@ -330,7 +327,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
   Widget _buildSocialButton({
     required String svgPath,
-    // required String label,
     required VoidCallback onPressed,
   }) {
     return GestureDetector(
@@ -344,7 +340,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
             SvgPicture.asset(
               svgPath,
               width: 28,
-              height: 28,
+              height: 40,
             ),
             SizedBox(height: 4),
           ],
