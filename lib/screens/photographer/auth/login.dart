@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import '../../../services/auth_service.dart';
+import '../../../routes/app_route.dart';
 
 
 class PhotographerLogin extends StatefulWidget {
@@ -377,17 +379,27 @@ class _PhotographerLoginState extends State<PhotographerLogin>
         _isLoading = true;
       });
 
-      // Simulate login process
-      await Future.delayed(Duration(seconds: 2));
+      try {
+        final success = await AuthService.signIn(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+          userType: 'photographer',
+        );
 
-      setState(() {
-        _isLoading = false;
-      });
-
-      _showSnackBar('Login successful!');
-
-      // Navigate to home screen
-      // Navigator.pushReplacementNamed(context, '/home');
+        if (success) {
+          _showSnackBar('Login successful!');
+          // Navigate to photographer home screen
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+        } else {
+          _showSnackBar('Login failed. Please check your credentials.');
+        }
+      } catch (e) {
+        _showSnackBar('An error occurred. Please try again.');
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

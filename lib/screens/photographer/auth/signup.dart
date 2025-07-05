@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import '../../../services/auth_service.dart';
+import '../../../routes/app_route.dart';
 
 class PhotoSignUp extends StatefulWidget {
   const PhotoSignUp({super.key});
@@ -486,17 +488,28 @@ class _PhotoSignUpState extends State<PhotoSignUp> with TickerProviderStateMixin
         _isLoading = true;
       });
 
-      // Simulate sign up process
-      await Future.delayed(Duration(seconds: 2));
+      try {
+        final success = await AuthService.signUp(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+          name: _nameController.text.trim(),
+          userType: 'photographer',
+        );
 
-      setState(() {
-        _isLoading = false;
-      });
-
-      _showSnackBar('Account created successfully!');
-
-      // Navigate to home screen or back to login
-      // Navigator.pushReplacementNamed(context, '/home');
+        if (success) {
+          _showSnackBar('Account created successfully!');
+          // Navigate to photographer home screen
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+        } else {
+          _showSnackBar('Sign up failed. Please try again.');
+        }
+      } catch (e) {
+        _showSnackBar('An error occurred. Please try again.');
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

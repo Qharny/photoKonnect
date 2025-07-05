@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photoconnect/screens/client/widget/bottom_bar.dart';
+import 'home/home.dart';
 
 class ClientHomePage extends StatefulWidget {
   const ClientHomePage({super.key});
@@ -86,10 +87,10 @@ class _ClientHomePageState extends State<ClientHomePage> {
 
 
 
-  String _getCurrentTabName() {
+  Object _getCurrentTabName() {
     switch (_currentIndex) {
       case 0:
-        return 'Home';
+        return HomePage();
       case 1:
         return 'Bookings';
       case 2:

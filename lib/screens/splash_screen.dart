@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../routes/app_route.dart';
-
+import '../services/auth_service.dart';
+import '../utils/auth_utils.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,23 +17,33 @@ class _SplashScreenState extends State<SplashScreen> {
     _checkAuthAndNavigate();
   }
 
- Future<void> _checkAuthAndNavigate() async {
-   await Future.delayed(const Duration(seconds: 4));
+  Future<void> _checkAuthAndNavigate() async {
+    await Future.delayed(const Duration(seconds: 4));
 
-   final prefs = await SharedPreferences.getInstance();
-   final isLoggedIn = prefs.getBool('is_logged_in') ?? false;
-   final isNewUser = prefs.getBool('is_new_user') ?? true;
+    // Debug: Print current auth state
+    await AuthUtils.printAuthState();
 
-   if (mounted) {
-     if (isNewUser) {
-       Navigator.pushReplacementNamed(context, AppRoutes.onboard);
-     } else if (isLoggedIn) {
-       Navigator.pushReplacementNamed(context, AppRoutes.home);
-     } else {
-       Navigator.pushReplacementNamed(context, AppRoutes.authland);
-     }
-   }
- }
+    final isLoggedIn = await AuthService.isLoggedIn();
+    final isNewUser = await AuthService.isNewUser();
+    final userType = await AuthService.getUserType();
+
+    if (mounted) {
+      if (isNewUser) {
+        Navigator.pushReplacementNamed(context, AppRoutes.onboard);
+      } else if (isLoggedIn) {
+        // Navigate based on user type
+        if (userType == 'client') {
+          Navigator.pushReplacementNamed(context, AppRoutes.clienthome);
+        } else if (userType == 'photographer') {
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+        } else {
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+        }
+      } else {
+        Navigator.pushReplacementNamed(context, AppRoutes.authland);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
-                  child: Image.asset("assets/images/Feed.gif"),
-                ),
+                SizedBox(child: Image.asset("assets/images/Feed.gif")),
                 const SizedBox(height: 24),
                 const Text(
                   'PhotoConnect',

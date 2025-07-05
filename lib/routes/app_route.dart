@@ -6,8 +6,7 @@ import 'package:photoconnect/screens/client/auth/signup.dart';
 import 'package:photoconnect/screens/client/client.dart';
 import 'package:photoconnect/screens/photographer/auth/login.dart';
 import 'package:photoconnect/theme/app_color.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import '../services/auth_service.dart';
 
 import '../screens/onboarding/onboarding_screen.dart';
 import '../screens/photographer/auth/signup.dart';
@@ -515,8 +514,7 @@ class _AuthWrapperState extends State<AuthWrapper>
   Future<bool> _checkAuthStatus() async {
     // Simulate network delay
     await Future.delayed(const Duration(seconds: 1));
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('is_logged_in') ?? false;
+    return await AuthService.isLoggedIn();
   }
 }
 
@@ -577,8 +575,44 @@ class NotificationPage extends StatelessWidget {
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
   @override
-  Widget build(BuildContext context) =>
-      const Scaffold(body: Center(child: Text('Profile Page')));
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      title: const Text('Profile'),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () => _showLogoutDialog(context),
+        ),
+      ],
+    ),
+    body: const Center(child: Text('Profile Page')),
+  );
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Logout'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await AuthService.signOut();
+                Navigator.of(context).pushReplacementNamed(AppRoutes.authland);
+              },
+              child: const Text('Logout', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class EditProfilePage extends StatelessWidget {
@@ -591,6 +625,64 @@ class EditProfilePage extends StatelessWidget {
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
   @override
-  Widget build(BuildContext context) =>
-      const Scaffold(body: Center(child: Text('Settings Page')));
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Settings')),
+    body: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          // Settings options
+          ListTile(
+            leading: const Icon(Icons.person),
+            title: const Text('Edit Profile'),
+            onTap: () => Navigator.pushNamed(context, AppRoutes.editProfile),
+          ),
+          ListTile(
+            leading: const Icon(Icons.notifications),
+            title: const Text('Notifications'),
+            onTap: () => Navigator.pushNamed(context, AppRoutes.notification),
+          ),
+          ListTile(
+            leading: const Icon(Icons.payment),
+            title: const Text('Payment & Bills'),
+            onTap: () =>
+                Navigator.pushNamed(context, AppRoutes.paymentAndBills),
+          ),
+          const Divider(),
+          // Logout option
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text('Logout', style: TextStyle(color: Colors.red)),
+            onTap: () => _showLogoutDialog(context),
+          ),
+        ],
+      ),
+    ),
+  );
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Logout'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await AuthService.signOut();
+                Navigator.of(context).pushReplacementNamed(AppRoutes.authland);
+              },
+              child: const Text('Logout', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

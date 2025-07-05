@@ -186,7 +186,7 @@ class _GlassBottomNavigationBarState extends State<GlassBottomNavigationBar>
                 key: ValueKey(isActive),
                 size: 24,
                 color: isActive
-                    ? Colors.white
+                    ? Colors.black
                     : Colors.white.withOpacity(0.6),
               ),
             ),
@@ -197,7 +197,7 @@ class _GlassBottomNavigationBarState extends State<GlassBottomNavigationBar>
                 fontSize: isActive ? 12 : 10,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
                 color: isActive
-                    ? Colors.white
+                    ? Colors.black
                     : Colors.white.withOpacity(0.6),
               ),
               child: Text(

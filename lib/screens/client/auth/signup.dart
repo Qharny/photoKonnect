@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import '../../../services/auth_service.dart';
+import '../../../routes/app_route.dart';
 
 class ClientSignUpScreen extends StatefulWidget {
   const ClientSignUpScreen({super.key});
@@ -8,7 +10,8 @@ class ClientSignUpScreen extends StatefulWidget {
   State<ClientSignUpScreen> createState() => _ClientSignUpScreenState();
 }
 
-class _ClientSignUpScreenState extends State<ClientSignUpScreen> with TickerProviderStateMixin {
+class _ClientSignUpScreenState extends State<ClientSignUpScreen>
+    with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -94,9 +97,7 @@ class _ClientSignUpScreenState extends State<ClientSignUpScreen> with TickerProv
 
   Widget _buildBackgroundPattern() {
     return Positioned.fill(
-      child: CustomPaint(
-        painter: BackgroundPatternPainter(),
-      ),
+      child: CustomPaint(painter: BackgroundPatternPainter()),
     );
   }
 
@@ -125,10 +126,7 @@ class _ClientSignUpScreenState extends State<ClientSignUpScreen> with TickerProv
         SizedBox(height: 8),
         Text(
           'Create your account',
-          style: TextStyle(
-            color: Colors.black.withOpacity(0.7),
-            fontSize: 16,
-          ),
+          style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 16),
         ),
       ],
     );
@@ -167,7 +165,9 @@ class _ClientSignUpScreenState extends State<ClientSignUpScreen> with TickerProv
               if (value == null || value.isEmpty) {
                 return 'Please enter your email';
               }
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+              if (!RegExp(
+                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+              ).hasMatch(value)) {
                 return 'Please enter a valid email';
               }
               return null;
@@ -305,15 +305,15 @@ class _ClientSignUpScreenState extends State<ClientSignUpScreen> with TickerProv
               ),
               child: _isLoading
                   ? CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              )
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    )
                   : Text(
-                'Create Account',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+                      'Create Account',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
             ),
           ),
         ],
@@ -343,12 +343,12 @@ class _ClientSignUpScreenState extends State<ClientSignUpScreen> with TickerProv
         prefixIcon: Icon(prefixIcon, color: Colors.black.withOpacity(0.7)),
         suffixIcon: isPassword
             ? IconButton(
-          icon: Icon(
-            isPasswordVisible ? Icons.visibility_off : Icons.visibility,
-            color: Colors.black.withOpacity(0.7),
-          ),
-          onPressed: onPasswordToggle,
-        )
+                icon: Icon(
+                  isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.black.withOpacity(0.7),
+                ),
+                onPressed: onPasswordToggle,
+              )
             : null,
         filled: true,
         fillColor: Colors.black.withOpacity(0.1),
@@ -433,11 +433,7 @@ class _ClientSignUpScreenState extends State<ClientSignUpScreen> with TickerProv
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.asset(
-              svgPath,
-              width: 28,
-              height: 40,
-            ),
+            SvgPicture.asset(svgPath, width: 28, height: 40),
             SizedBox(height: 4),
           ],
         ),
@@ -451,10 +447,7 @@ class _ClientSignUpScreenState extends State<ClientSignUpScreen> with TickerProv
       children: [
         Text(
           "Already have an account? ",
-          style: TextStyle(
-            color: Colors.black.withOpacity(0.7),
-            fontSize: 14,
-          ),
+          style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 14),
         ),
         TextButton(
           onPressed: () {
@@ -485,17 +478,28 @@ class _ClientSignUpScreenState extends State<ClientSignUpScreen> with TickerProv
         _isLoading = true;
       });
 
-      // Simulate sign up process
-      await Future.delayed(Duration(seconds: 2));
+      try {
+        final success = await AuthService.signUp(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+          name: _nameController.text.trim(),
+          userType: 'client',
+        );
 
-      setState(() {
-        _isLoading = false;
-      });
-
-      // _showSnackBar('Account created successfully!');
-
-      // Navigate to home screen or back to login
-      Navigator.pushReplacementNamed(context, '/client-home');
+        if (success) {
+          _showSnackBar('Account created successfully!');
+          // Navigate to client home screen
+          Navigator.pushReplacementNamed(context, AppRoutes.clienthome);
+        } else {
+          _showSnackBar('Sign up failed. Please try again.');
+        }
+      } catch (e) {
+        _showSnackBar('An error occurred. Please try again.');
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -526,11 +530,7 @@ class BackgroundPatternPainter extends CustomPainter {
         final y = (size.height / 12) * j;
 
         // Draw circles
-        canvas.drawCircle(
-          Offset(x, y),
-          20,
-          paint,
-        );
+        canvas.drawCircle(Offset(x, y), 20, paint);
 
         // Draw lines
         if (i < 7) {

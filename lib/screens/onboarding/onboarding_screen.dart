@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../../services/auth_service.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -24,17 +25,20 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     OnboardingPage(
       gifPath: 'assets/gif/Camera.gif',
       title: 'Find Professional Photographers',
-      description: 'Discover talented photographers in your area for any occasion',
+      description:
+          'Discover talented photographers in your area for any occasion',
     ),
     OnboardingPage(
       gifPath: 'assets/gif/book.gif',
       title: 'Book & Schedule Sessions',
-      description: 'Easy booking system with real-time availability and instant confirmation.',
+      description:
+          'Easy booking system with real-time availability and instant confirmation.',
     ),
     OnboardingPage(
       gifPath: 'assets/gif/payment.gif',
       title: 'Secure Payments & Reviews',
-      description: 'Safe payment processing and authentic reviews from real clients.',
+      description:
+          'Safe payment processing and authentic reviews from real clients.',
     ),
   ];
 
@@ -68,13 +72,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       duration: Duration(milliseconds: 800),
       vsync: this,
     );
-    _slideAnimation = Tween<Offset>(
-      begin: Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.easeOutCubic,
-    ));
+    _slideAnimation = Tween<Offset>(begin: Offset(0, 0.3), end: Offset.zero)
+        .animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+        );
 
     // Start animations
     _fadeController.forward();
@@ -314,10 +315,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.1),
             borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1,
-            ),
+            border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
           ),
           padding: EdgeInsets.all(32),
           child: Column(
@@ -340,7 +338,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
                   pages.length,
-                      (index) => Container(
+                  (index) => Container(
                     margin: EdgeInsets.symmetric(horizontal: 4),
                     height: 8,
                     width: _currentPage == index ? 24 : 8,
@@ -351,12 +349,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                       borderRadius: BorderRadius.circular(4),
                       boxShadow: _currentPage == index
                           ? [
-                        BoxShadow(
-                          color: Colors.white.withOpacity(0.5),
-                          blurRadius: 8,
-                          offset: Offset(0, 2),
-                        ),
-                      ]
+                              BoxShadow(
+                                color: Colors.white.withOpacity(0.5),
+                                blurRadius: 8,
+                                offset: Offset(0, 2),
+                              ),
+                            ]
                           : [],
                     ),
                   ),
@@ -393,7 +391,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        _currentPage < pages.length - 1 ? 'Next' : 'Get Started',
+                        _currentPage < pages.length - 1
+                            ? 'Next'
+                            : 'Get Started',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -419,7 +419,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     );
   }
 
-  void _finishOnboarding() {
+  void _finishOnboarding() async {
+    // Mark user as not new
+    await AuthService.markUserAsNotNew();
     Navigator.of(context).pushReplacementNamed('/authland');
   }
 }
