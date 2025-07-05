@@ -4,7 +4,7 @@ class OnboardingScreen extends StatefulWidget {
 const OnboardingScreen({super.key});
 
 @override
-_OnboardingScreenState createState() => _OnboardingScreenState();
+State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
@@ -13,25 +13,27 @@ int _currentPage = 0;
 
 List<OnboardingPage> pages = [
 OnboardingPage(
-gifPath: 'assets/images/onboarding1.gif',
-title: 'Welcome to Flutter',
-description: 'Build beautiful apps with ease',
+gifPath: 'assets/gif/Camera.gif',
+title: 'Find Professional Photographers',
+description: 'Discover talented photographers in your area for any occasion',
 ),
 OnboardingPage(
-gifPath: 'assets/images/onboarding2.gif',
-title: 'Fast Development',
-description: 'Hot reload helps you iterate quickly',
+gifPath: 'assets/gif/book.gif',
+title: 'Book & Schedule Sessions',
+description: 'Easy booking system with real-time availability and instant confirmation.',
 ),
 OnboardingPage(
-gifPath: 'assets/images/onboarding3.gif',
-title: 'Get Started',
-description: 'Ready to build something amazing?',
+gifPath: 'assets/gif/payment.gif',
+title: 'Secure Payments & Reviews',
+description: 'Safe payment processing and authentic reviews from real clients.',
 ),
 ];
+
 
 @override
 Widget build(BuildContext context) {
 return Scaffold(
+backgroundColor: Colors.white,
 body: SafeArea(
 child: Column(
 children: [
@@ -40,11 +42,10 @@ Align(
 alignment: Alignment.topRight,
 child: TextButton(
 onPressed: () => _finishOnboarding(),
-child: Text('Skip'),
+child: Text('Skip', style: TextStyle(color: Colors.black, fontSize: 15),),
 ),
 ),
 
-// PageView with GIFs
 Expanded(
 child: PageView.builder(
 controller: _pageController,
@@ -66,16 +67,15 @@ height: 300,
 width: 300,
 decoration: BoxDecoration(
 borderRadius: BorderRadius.circular(20),
-boxShadow: [
-BoxShadow(
-color: Colors.black.withOpacity(0.1),
-blurRadius: 10,
-offset: Offset(0, 5),
-),
-],
+// boxShadow: [
+// BoxShadow(
+// color: Colors.black.withOpacity(0.1),
+// blurRadius: 10,
+// offset: Offset(0, 5),
+// ),
+// ],
 ),
 child: ClipRRect(
-borderRadius: BorderRadius.circular(20),
 child: Image.asset(
 pages[index].gifPath,
 fit: BoxFit.cover,
@@ -135,7 +135,7 @@ height: 8,
 width: _currentPage == index ? 24 : 8,
 decoration: BoxDecoration(
 color: _currentPage == index
-? Colors.blue
+? Colors.black
 : Colors.grey[300],
 borderRadius: BorderRadius.circular(4),
 ),
@@ -162,6 +162,7 @@ _finishOnboarding();
 }
 },
 style: ElevatedButton.styleFrom(
+backgroundColor: Colors.black,
 padding: EdgeInsets.symmetric(vertical: 16),
 shape: RoundedRectangleBorder(
 borderRadius: BorderRadius.circular(8),
@@ -169,7 +170,7 @@ borderRadius: BorderRadius.circular(8),
 ),
 child: Text(
 _currentPage < pages.length - 1 ? 'Next' : 'Get Started',
-style: TextStyle(fontSize: 16),
+style: TextStyle(fontSize: 16, color: Colors.white),
 ),
 ),
 ),
@@ -183,8 +184,7 @@ SizedBox(height: 20),
 }
 
 void _finishOnboarding() {
-// Navigate to main app or save onboarding completion
-Navigator.of(context).pushReplacementNamed('/home');
+Navigator.of(context).pushReplacementNamed('/authland');
 }
 }
 

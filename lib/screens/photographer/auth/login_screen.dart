@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:photoconnect/screens/auth/register.dart';
-import '../../theme/app_color.dart';
-import '../../widgets/custom_button.dart';
-import '../../services/supabase_service.dart';
-import '../../routes/custom_page_route.dart';
-import '../home_screen.dart';
+import 'package:photoconnect/screens/photographer/auth/register.dart';
+
+import '../../../routes/custom_page_route.dart';
+import '../../../services/supabase_service.dart';
+import '../../../theme/app_color.dart';
+import '../../../widgets/custom_button.dart';
+import '../../home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -267,7 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     onTap: () {
                       Navigator.of(context).push(
                         CustomPageRoute(
-                          child: const RegisterScreen(),
+                          child: const PhotographerRegister(),
                           transitionsBuilder: CustomPageRoute.slideFromRight,
                         ),
                       );

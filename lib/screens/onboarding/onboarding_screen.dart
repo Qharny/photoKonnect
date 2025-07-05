@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -7,9 +8,17 @@ class OnboardingScreen extends StatefulWidget {
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends State<OnboardingScreen>
+    with TickerProviderStateMixin {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+
+  late AnimationController _fadeController;
+  late AnimationController _scaleController;
+  late AnimationController _slideController;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+  late Animation<Offset> _slideAnimation;
 
   List<OnboardingPage> pages = [
     OnboardingPage(
@@ -29,22 +38,155 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     ),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _setupAnimations();
+  }
+
+  void _setupAnimations() {
+    // Fade animation for the entire screen
+    _fadeController = AnimationController(
+      duration: Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
+    );
+
+    // Scale animation for GIF containers
+    _scaleController = AnimationController(
+      duration: Duration(milliseconds: 1000),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _scaleController, curve: Curves.elasticOut),
+    );
+
+    // Slide animation for content
+    _slideController = AnimationController(
+      duration: Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _slideController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    // Start animations
+    _fadeController.forward();
+    Future.delayed(Duration(milliseconds: 500), () {
+      _scaleController.forward();
+      _slideController.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    _scaleController.dispose();
+    _slideController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Skip button
-            Align(
-              alignment: Alignment.topRight,
-              child: TextButton(
-                onPressed: () => _finishOnboarding(),
-                child: Text('Skip', style: TextStyle(color: Colors.black, fontSize: 15),),
+      body: Stack(
+        children: [
+          // Background Image
+          _buildBackgroundImage(),
+
+          // Gradient Overlay
+          _buildGradientOverlay(),
+
+          // Main Content
+          _buildMainContent(),
+
+          // Skip Button
+          _buildSkipButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBackgroundImage() {
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/cam.jpg'),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGradientOverlay() {
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.black.withOpacity(0.2),
+            Colors.black.withOpacity(0.3),
+            Colors.black.withOpacity(0.6),
+            Colors.black.withOpacity(0.8),
+          ],
+          stops: [0.0, 0.3, 0.6, 1.0],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSkipButton() {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SafeArea(
+        child: Positioned(
+          top: 16,
+          right: 20,
+          left: 20,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.3),
+                width: 1,
               ),
             ),
+            child: TextButton(
+              onPressed: () => _finishOnboarding(),
+              child: Text(
+                'Skip',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMainContent() {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SafeArea(
+        child: Column(
+          children: [
+            SizedBox(height: 80),
 
             Expanded(
               child: PageView.builder(
@@ -54,101 +196,177 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   setState(() {
                     _currentPage = index;
                   });
+                  // Restart animations for new page
+                  _scaleController.reset();
+                  _slideController.reset();
+                  _scaleController.forward();
+                  _slideController.forward();
                 },
                 itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // GIF Display
-                        Container(
-                          height: 300,
-                          width: 300,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            // boxShadow: [
-                            //   BoxShadow(
-                            //     color: Colors.black.withOpacity(0.1),
-                            //     blurRadius: 10,
-                            //     offset: Offset(0, 5),
-                            //   ),
-                            // ],
-                          ),
-                          child: ClipRRect(
-                            child: Image.asset(
-                              pages[index].gifPath,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey[300],
-                                  child: Icon(
-                                    Icons.image_not_supported,
-                                    size: 50,
-                                    color: Colors.grey[600],
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: 40),
-
-                        // Title
-                        Text(
-                          pages[index].title,
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-
-                        SizedBox(height: 20),
-
-                        // Description
-                        Text(
-                          pages[index].description,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black54,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  );
+                  return _buildPageContent(index);
                 },
               ),
             ),
 
-            // Page indicator
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                pages.length,
-                    (index) => Container(
-                  margin: EdgeInsets.symmetric(horizontal: 4),
-                  height: 8,
-                  width: _currentPage == index ? 24 : 8,
-                  decoration: BoxDecoration(
-                    color: _currentPage == index
-                        ? Colors.black
-                        : Colors.grey[300],
-                    borderRadius: BorderRadius.circular(4),
+            // Bottom Section with indicators and button
+            _buildBottomSection(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPageContent(int index) {
+    return SlideTransition(
+      position: _slideAnimation,
+      child: Padding(
+        padding: EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // GIF Container with glassmorphism effect
+            ScaleTransition(
+              scale: _scaleAnimation,
+              child: SizedBox(
+                height: 280,
+                width: 280,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(32),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 0.5, sigmaY: 0.5),
+                    child: Container(
+                      padding: EdgeInsets.all(16),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.asset(
+                          pages[index].gifPath,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.white.withOpacity(0.1),
+                              child: Icon(
+                                Icons.image_not_supported,
+                                size: 50,
+                                color: Colors.white.withOpacity(0.7),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
 
-            SizedBox(height: 40),
+            SizedBox(height: 20),
 
-            // Next/Get Started button
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: SizedBox(
+            // Title with shadow
+            Text(
+              pages[index].title,
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                letterSpacing: 1.0,
+                shadows: [
+                  Shadow(
+                    color: Colors.black.withOpacity(0.7),
+                    blurRadius: 10,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+
+            SizedBox(height: 20),
+
+            // Description with shadow
+            Text(
+              pages[index].description,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white.withOpacity(0.9),
+                height: 1.5,
+                shadows: [
+                  Shadow(
+                    color: Colors.black.withOpacity(0.5),
+                    blurRadius: 8,
+                    offset: Offset(0, 1),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomSection() {
+    return ClipRRect(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.1),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.2),
+              width: 1,
+            ),
+          ),
+          padding: EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle bar
+              Container(
+                width: 60,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+
+              SizedBox(height: 24),
+
+              // Page indicators
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  pages.length,
+                      (index) => Container(
+                    margin: EdgeInsets.symmetric(horizontal: 4),
+                    height: 8,
+                    width: _currentPage == index ? 24 : 8,
+                    decoration: BoxDecoration(
+                      color: _currentPage == index
+                          ? Colors.white
+                          : Colors.white.withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(4),
+                      boxShadow: _currentPage == index
+                          ? [
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.5),
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
+                        ),
+                      ]
+                          : [],
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 32),
+
+              // Next/Get Started button
+              SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
@@ -162,22 +380,40 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Colors.white.withOpacity(0.9),
+                    foregroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(20),
                     ),
+                    elevation: 8,
+                    shadowColor: Colors.black.withOpacity(0.3),
+                    padding: EdgeInsets.symmetric(vertical: 18),
                   ),
-                  child: Text(
-                    _currentPage < pages.length - 1 ? 'Next' : 'Get Started',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        _currentPage < pages.length - 1 ? 'Next' : 'Get Started',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Icon(
+                        _currentPage < pages.length - 1
+                            ? Icons.arrow_forward_ios
+                            : Icons.check_circle,
+                        size: 18,
+                        color: Colors.black,
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
-
-            SizedBox(height: 20),
-          ],
+            ],
+          ),
         ),
       ),
     );

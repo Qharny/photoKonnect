@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen>
+    with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
   bool _isPasswordVisible = false;
-  bool _isConfirmPasswordVisible = false;
   bool _isLoading = false;
-  bool _acceptTerms = false;
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
 
@@ -37,10 +36,8 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
   @override
   void dispose() {
     _fadeController.dispose();
-    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -61,27 +58,25 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
                 padding: EdgeInsets.all(24),
                 child: Column(
                   children: [
-                    SizedBox(height: 40),
+                    SizedBox(height: 60),
 
                     // Logo/Title Section
                     _buildHeader(),
 
-                    SizedBox(height: 40),
+                    SizedBox(height: 60),
 
-                    // Sign Up Form
-                    _buildSignUpForm(),
+                    // Login Form
+                    _buildLoginForm(),
 
-                    SizedBox(height: 20),
+                    SizedBox(height: 30),
 
-                    // Social Media Sign Up
-                    _buildSocialSignUp(),
-
-                    SizedBox(height: 20),
-
-                    // Sign In Link
-                    _buildSignInLink(),
+                    // Social Media Login
+                    _buildSocialLogin(),
 
                     SizedBox(height: 20),
+
+                    // Sign Up Link
+                    _buildSignUpLink(),
                   ],
                 ),
               ),
@@ -94,9 +89,7 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
 
   Widget _buildBackgroundPattern() {
     return Positioned.fill(
-      child: CustomPaint(
-        painter: BackgroundPatternPainter(),
-      ),
+      child: CustomPaint(painter: BackgroundPatternPainter()),
     );
   }
 
@@ -124,39 +117,18 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
         ),
         SizedBox(height: 8),
         Text(
-          'Create your account',
-          style: TextStyle(
-            color: Colors.black.withOpacity(0.7),
-            fontSize: 16,
-          ),
+          'Sign in to continue',
+          style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 16),
         ),
       ],
     );
   }
 
-  Widget _buildSignUpForm() {
+  Widget _buildLoginForm() {
     return Form(
       key: _formKey,
       child: Column(
         children: [
-          // Name Field
-          _buildTextField(
-            controller: _nameController,
-            label: 'Full Name',
-            prefixIcon: Icons.person_outline,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your full name';
-              }
-              if (value.length < 2) {
-                return 'Name must be at least 2 characters';
-              }
-              return null;
-            },
-          ),
-
-          SizedBox(height: 20),
-
           // Email Field
           _buildTextField(
             controller: _emailController,
@@ -167,7 +139,7 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
               if (value == null || value.isEmpty) {
                 return 'Please enter your email';
               }
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+              if (!value.contains('@')) {
                 return 'Please enter a valid email';
               }
               return null;
@@ -182,122 +154,47 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
             label: 'Password',
             prefixIcon: Icons.lock_outline,
             isPassword: true,
-            isPasswordVisible: _isPasswordVisible,
-            onPasswordToggle: () {
-              setState(() {
-                _isPasswordVisible = !_isPasswordVisible;
-              });
-            },
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter your password';
               }
-              if (value.length < 8) {
-                return 'Password must be at least 8 characters';
-              }
-              if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
-                return 'Password must contain uppercase, lowercase, and number';
+              if (value.length < 6) {
+                return 'Password must be at least 6 characters';
               }
               return null;
             },
           ),
 
-          SizedBox(height: 20),
+          SizedBox(height: 16),
 
-          // Confirm Password Field
-          _buildTextField(
-            controller: _confirmPasswordController,
-            label: 'Confirm Password',
-            prefixIcon: Icons.lock_outline,
-            isPassword: true,
-            isPasswordVisible: _isConfirmPasswordVisible,
-            onPasswordToggle: () {
-              setState(() {
-                _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-              });
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please confirm your password';
-              }
-              if (value != _passwordController.text) {
-                return 'Passwords do not match';
-              }
-              return null;
-            },
-          ),
-
-          SizedBox(height: 20),
-
-          // Terms and Conditions Checkbox
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Checkbox(
-                value: _acceptTerms,
-                onChanged: (value) {
-                  setState(() {
-                    _acceptTerms = value ?? false;
-                  });
-                },
-                activeColor: Colors.black,
-                checkColor: Colors.white,
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _acceptTerms = !_acceptTerms;
-                    });
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 12),
-                    child: RichText(
-                      text: TextSpan(
-                        style: TextStyle(
-                          color: Colors.black.withOpacity(0.7),
-                          fontSize: 14,
-                        ),
-                        children: [
-                          TextSpan(text: 'I agree to the '),
-                          TextSpan(
-                            text: 'Terms of Service',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                          TextSpan(text: ' and '),
-                          TextSpan(
-                            text: 'Privacy Policy',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+          // Forgot Password
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () {
+                // Handle forgot password
+              },
+              child: Text(
+                'Forgot Password?',
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.8),
+                  fontSize: 14,
                 ),
               ),
-            ],
+            ),
           ),
 
           SizedBox(height: 32),
 
-          // Sign Up Button
+          // Login Button
           SizedBox(
             width: double.infinity,
             height: 56,
             child: ElevatedButton(
-              onPressed: (_isLoading || !_acceptTerms) ? null : _handleSignUp,
+              onPressed: _isLoading ? null : _handleLogin,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 foregroundColor: Colors.white,
-                disabledBackgroundColor: Colors.black.withOpacity(0.5),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -308,7 +205,7 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               )
                   : Text(
-                'Create Account',
+                'Sign In',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -326,14 +223,12 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
     required String label,
     required IconData prefixIcon,
     bool isPassword = false,
-    bool isPasswordVisible = false,
-    VoidCallback? onPasswordToggle,
     TextInputType keyboardType = TextInputType.text,
     String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
-      obscureText: isPassword && !isPasswordVisible,
+      obscureText: isPassword && !_isPasswordVisible,
       keyboardType: keyboardType,
       validator: validator,
       style: TextStyle(color: Colors.black),
@@ -344,10 +239,14 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
         suffixIcon: isPassword
             ? IconButton(
           icon: Icon(
-            isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+            _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
             color: Colors.black.withOpacity(0.7),
           ),
-          onPressed: onPasswordToggle,
+          onPressed: () {
+            setState(() {
+              _isPasswordVisible = !_isPasswordVisible;
+            });
+          },
         )
             : null,
         filled: true,
@@ -372,7 +271,7 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
     );
   }
 
-  Widget _buildSocialSignUp() {
+  Widget _buildSocialLogin() {
     return Column(
       children: [
         Row(
@@ -381,7 +280,7 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Or sign up with',
+                'Or continue with',
                 style: TextStyle(
                   color: Colors.black.withOpacity(0.7),
                   fontSize: 14,
@@ -400,19 +299,22 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
             _buildSocialButton(
               svgPath: 'assets/svg/google.svg',
               onPressed: () {
-                _showSnackBar('Google sign up pressed');
+                // Handle Google login
+                _showSnackBar('Google login pressed');
               },
             ),
             _buildSocialButton(
               svgPath: 'assets/svg/x.svg',
               onPressed: () {
-                _showSnackBar('X sign up pressed');
+                // Handle X login
+                _showSnackBar('X login pressed');
               },
             ),
             _buildSocialButton(
               svgPath: 'assets/svg/instagram.svg',
               onPressed: () {
-                _showSnackBar('Instagram sign up pressed');
+                // Handle Instagram login
+                _showSnackBar('Instagram login pressed');
               },
             ),
           ],
@@ -433,11 +335,7 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.asset(
-              svgPath,
-              width: 28,
-              height: 40,
-            ),
+            SvgPicture.asset(svgPath, width: 28, height: 40),
             SizedBox(height: 4),
           ],
         ),
@@ -445,24 +343,23 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
     );
   }
 
-  Widget _buildSignInLink() {
+  Widget _buildSignUpLink() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "Already have an account? ",
-          style: TextStyle(
-            color: Colors.black.withOpacity(0.7),
-            fontSize: 14,
-          ),
+          "Don't have an account? ",
+          style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 14),
         ),
         TextButton(
+          // onPressed: () => NavigationService.navigateTo(AppRoutes.signup),
           onPressed: () {
-            // Navigate back to login screen
-            Navigator.pop(context);
+            // Navigate to sign up screen
+            Navigator.pushNamed(context, '/signup');
+            // NavigationService.navigateAndReplace(AppRoutes.home);
           },
           child: Text(
-            'Sign In',
+            'Sign Up',
             style: TextStyle(
               color: Colors.black,
               fontSize: 14,
@@ -474,27 +371,22 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
     );
   }
 
-  void _handleSignUp() async {
+  void _handleLogin() async {
     if (_formKey.currentState!.validate()) {
-      if (!_acceptTerms) {
-        _showSnackBar('Please accept the Terms of Service and Privacy Policy');
-        return;
-      }
-
       setState(() {
         _isLoading = true;
       });
 
-      // Simulate sign up process
+      // Simulate login process
       await Future.delayed(Duration(seconds: 2));
 
       setState(() {
         _isLoading = false;
       });
 
-      _showSnackBar('Account created successfully!');
+      _showSnackBar('Login successful!');
 
-      // Navigate to home screen or back to login
+      // Navigate to home screen
       // Navigator.pushReplacementNamed(context, '/home');
     }
   }
@@ -510,7 +402,6 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
   }
 }
 
-// Reusing the same BackgroundPatternPainter from the login screen
 class BackgroundPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -526,11 +417,7 @@ class BackgroundPatternPainter extends CustomPainter {
         final y = (size.height / 12) * j;
 
         // Draw circles
-        canvas.drawCircle(
-          Offset(x, y),
-          20,
-          paint,
-        );
+        canvas.drawCircle(Offset(x, y), 20, paint);
 
         // Draw lines
         if (i < 7) {

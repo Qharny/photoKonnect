@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+
 
 class AnimatedLogo extends StatefulWidget {
   final double size;

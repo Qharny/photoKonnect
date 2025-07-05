@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:photoconnect/auth/auth_landing.dart';
-import 'package:photoconnect/screens/auth/signup.dart';
+import 'package:photoconnect/auth/login.dart';
+import 'package:photoconnect/screens/client/auth/login.dart';
+import 'package:photoconnect/screens/photographer/auth/login.dart';
 import 'package:photoconnect/theme/app_color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../screens/auth/login.dart';
+
 import '../screens/onboarding/onboarding_screen.dart';
+import '../screens/photographer/auth/signup.dart';
 
 enum RouteAnimation {
   slideRight,
@@ -38,9 +41,12 @@ class AppRoutes {
   static const String splash = '/splash';
   static const String onboard = '/onboard';
   static const String authland = '/authland';
+  static const String photologin = '/photo-login';
   static const String login = '/login';
+  static const String clientlogin = '/client-login';
   static const String home = '/home';
-  static const String signup = '/signup';
+  static const String photosignup = '/photo-signup';
+  static const String clientsignup = '/client-signup';
   static const String paymentAndBills = '/payment-and-bills';
   static const String results = '/results';
   static const String lecturerAssessment = '/lecturer-assessment';
@@ -57,9 +63,21 @@ class AppRoutes {
       animation: RouteAnimation.fade,
       duration: const Duration(milliseconds: 500),
     ),
+    photologin: RouteConfig(
+      path: photologin,
+      builder: (context) => PhotographerLogin(),
+      animation: RouteAnimation.slideRight,
+      duration: const Duration(milliseconds: 400),
+    ),
     login: RouteConfig(
       path: login,
       builder: (context) => LoginScreen(),
+      animation: RouteAnimation.slideRight,
+      duration: const Duration(milliseconds: 400),
+    ),
+    clientlogin: RouteConfig(
+      path: clientlogin,
+      builder: (context) => ClientLogin(),
       animation: RouteAnimation.slideRight,
       duration: const Duration(milliseconds: 400),
     ),
@@ -76,9 +94,15 @@ class AppRoutes {
       animation: RouteAnimation.slideRight,
       requiresAuth: true,
     ),
-    signup: RouteConfig(
-      path: signup,
-      builder: (context) => const SignUpScreen(),
+    photosignup: RouteConfig(
+      path: photosignup,
+      builder: (context) => const PhotoSignUp(),
+      animation: RouteAnimation.scale,
+      duration: const Duration(milliseconds: 350),
+    ),
+    clientsignup: RouteConfig(
+      path: clientsignup,
+      builder: (context) => const PhotoSignUp(),
       animation: RouteAnimation.slideUp,
       duration: const Duration(milliseconds: 350),
     ),
@@ -468,7 +492,7 @@ class _AuthWrapperState extends State<AuthWrapper>
         } else {
           // Not authenticated, redirect to login
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushReplacementNamed(context, AppRoutes.login);
+            Navigator.pushReplacementNamed(context, AppRoutes.authland);
           });
           return const Scaffold(
             body: Center(

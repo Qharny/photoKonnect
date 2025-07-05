@@ -441,13 +441,13 @@ class _AuthLandingScreenState extends State<AuthLandingScreen>
   void _navigateToPhotographerAuth() {
     _showSnackBar('Navigating to photographer authentication...');
     // Navigate to photographer login/signup
-    Navigator.pushNamed(context, '/photographer-auth');
+    Navigator.pushNamed(context, '/photo-signup');
   }
 
   void _navigateToClientAuth() {
     _showSnackBar('Navigating to client authentication...');
     // Navigate to client login/signup
-    Navigator.pushNamed(context, '/client-auth');
+    Navigator.pushNamed(context, '/client-signup');
   }
 
   void _navigateToLogin() {

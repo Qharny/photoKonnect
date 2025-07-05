@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../routes/app_route.dart';
-import '../theme/app_color.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -20,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
  Future<void> _checkAuthAndNavigate() async {
-   await Future.delayed(const Duration(seconds: 5));
+   await Future.delayed(const Duration(seconds: 4));
 
    final prefs = await SharedPreferences.getInstance();
    final isLoggedIn = prefs.getBool('is_logged_in') ?? false;
@@ -32,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
      } else if (isLoggedIn) {
        Navigator.pushReplacementNamed(context, AppRoutes.home);
      } else {
-       Navigator.pushReplacementNamed(context, AppRoutes.login);
+       Navigator.pushReplacementNamed(context, AppRoutes.authland);
      }
    }
  }

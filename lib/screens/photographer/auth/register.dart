@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_color.dart';
-import '../../widgets/custom_button.dart';
-import '../../services/supabase_service.dart';
-import '../../routes/custom_page_route.dart';
-import '../home_screen.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+import '../../../routes/custom_page_route.dart';
+import '../../../services/supabase_service.dart';
+import '../../../theme/app_color.dart';
+import '../../../widgets/custom_button.dart';
+import '../../home_screen.dart';
+
+
+class PhotographerRegister extends StatefulWidget {
+  const PhotographerRegister({super.key});
+
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<PhotographerRegister> createState() => _PhotographerRegisterState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _PhotographerRegisterState extends State<PhotographerRegister> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
