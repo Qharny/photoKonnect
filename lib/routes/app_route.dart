@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:photoconnect/auth/auth_landing.dart';
 import 'package:photoconnect/auth/login.dart';
 import 'package:photoconnect/screens/client/auth/login.dart';
+import 'package:photoconnect/screens/client/auth/signup.dart';
+import 'package:photoconnect/screens/client/client.dart';
 import 'package:photoconnect/screens/photographer/auth/login.dart';
 import 'package:photoconnect/theme/app_color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,9 +46,10 @@ class AppRoutes {
   static const String photologin = '/photo-login';
   static const String login = '/login';
   static const String clientlogin = '/client-login';
-  static const String home = '/home';
   static const String photosignup = '/photo-signup';
   static const String clientsignup = '/client-signup';
+  static const String home = '/home';
+  static const String clienthome = '/client-home';
   static const String paymentAndBills = '/payment-and-bills';
   static const String results = '/results';
   static const String lecturerAssessment = '/lecturer-assessment';
@@ -88,12 +91,6 @@ class AppRoutes {
       duration: const Duration(milliseconds: 400),
       requiresAuth: true,
     ),
-    home: RouteConfig(
-      path: home,
-      builder: (context) => const HomePage(),
-      animation: RouteAnimation.slideRight,
-      requiresAuth: true,
-    ),
     photosignup: RouteConfig(
       path: photosignup,
       builder: (context) => const PhotoSignUp(),
@@ -102,9 +99,20 @@ class AppRoutes {
     ),
     clientsignup: RouteConfig(
       path: clientsignup,
-      builder: (context) => const PhotoSignUp(),
+      builder: (context) => const ClientSignUpScreen(),
       animation: RouteAnimation.slideUp,
       duration: const Duration(milliseconds: 350),
+    ),
+    home: RouteConfig(
+      path: home,
+      builder: (context) => const HomePage(),
+      animation: RouteAnimation.slideRight,
+    ),
+    clienthome: RouteConfig(
+      path: clienthome,
+      builder: (context) => ClientHomePage(),
+      animation: RouteAnimation.slideRight,
+      requiresAuth: true,
     ),
     paymentAndBills: RouteConfig(
       path: paymentAndBills,

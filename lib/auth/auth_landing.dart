@@ -305,7 +305,7 @@ class _AuthLandingScreenState extends State<AuthLandingScreen>
     required VoidCallback onPressed,
     required bool isPrimary,
   }) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: onPressed,

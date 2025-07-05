@@ -492,10 +492,10 @@ class _ClientSignUpScreenState extends State<ClientSignUpScreen> with TickerProv
         _isLoading = false;
       });
 
-      _showSnackBar('Account created successfully!');
+      // _showSnackBar('Account created successfully!');
 
       // Navigate to home screen or back to login
-      // Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, '/client-home');
     }
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomPageRoute<T> extends PageRouteBuilder<T> {
   final Widget child;
+  @override
   final RouteTransitionsBuilder transitionsBuilder;
 
   CustomPageRoute({
