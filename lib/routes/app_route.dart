@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:photoconnect/auth/auth_landing.dart';
 import 'package:photoconnect/screens/auth/signup.dart';
+import 'package:photoconnect/theme/app_color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../screens/auth/login.dart';
@@ -34,9 +35,11 @@ class RouteConfig {
 }
 
 class AppRoutes {
+  static const String splash = '/splash';
   static const String onboard = '/onboard';
+  static const String authland = '/authland';
   static const String login = '/login';
-  static const String home = '/';
+  static const String home = '/home';
   static const String signup = '/signup';
   static const String paymentAndBills = '/payment-and-bills';
   static const String results = '/results';
@@ -56,9 +59,16 @@ class AppRoutes {
     ),
     login: RouteConfig(
       path: login,
-      builder: (context) =>  LoginScreen(),
-      animation: RouteAnimation.fade,
+      builder: (context) => LoginScreen(),
+      animation: RouteAnimation.slideRight,
       duration: const Duration(milliseconds: 400),
+    ),
+    authland: RouteConfig(
+      path: authland,
+      builder: (context) => const AuthLandingScreen(),
+      animation: RouteAnimation.slideLeft,
+      duration: const Duration(milliseconds: 400),
+      requiresAuth: true,
     ),
     home: RouteConfig(
       path: home,
@@ -136,7 +146,7 @@ class AppRoutes {
       return _createAnimatedRoute(
         builder: (context) => Scaffold(
           appBar: AppBar(title: const Text('Page Not Found')),
-          body: Center(child: SvgPicture.asset("assets/gif/404.svg")),
+          body: Center(child: Image.asset("assets/gif/404.gif")),
         ),
         animation: RouteAnimation.fade,
         duration: const Duration(milliseconds: 300),
@@ -426,7 +436,7 @@ class _AuthWrapperState extends State<AuthWrapper>
                           width: 60,
                           height: 60,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF16a47e),
+                            color: AppColors.secondary,
                             borderRadius: BorderRadius.circular(30),
                           ),
                           child: const Icon(
@@ -443,7 +453,7 @@ class _AuthWrapperState extends State<AuthWrapper>
                     'Verifying Authentication...',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Color(0xFF16a47e),
+                      color: AppColors.secondary,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -496,8 +506,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
