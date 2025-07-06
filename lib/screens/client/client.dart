@@ -46,7 +46,7 @@ class _ClientHomePageState extends State<ClientHomePage> {
   Widget _getCurrentPage() {
     switch (_currentIndex) {
       case 0:
-        return const HomePage();
+        return const HomeScreen();
       case 1:
         return const BookingsPage();
       case 2:
@@ -54,7 +54,7 @@ class _ClientHomePageState extends State<ClientHomePage> {
       case 3:
         return const ProfilePage();
       default:
-        return const HomePage();
+        return const HomeScreen();
     }
   }
 }
