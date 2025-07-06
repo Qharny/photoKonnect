@@ -170,4 +170,4 @@ class AuthService {
   static Stream<AuthState> get authStateStream {
     return SupabaseService.authStateStream;
   }
-} 
+}

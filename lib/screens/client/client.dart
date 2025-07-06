@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:photoconnect/screens/client/widget/bottom_bar.dart';
 import 'home/home.dart';
+import 'bookings/bookings_page.dart';
+import 'favorites/favorites_page.dart';
+import 'profile/profile_page.dart';
 
 class ClientHomePage extends StatefulWidget {
   const ClientHomePage({super.key});
@@ -18,50 +21,7 @@ class _ClientHomePageState extends State<ClientHomePage> {
       body: Stack(
         children: [
           _buildBackgroundPattern(),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
-                      width: 1,
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.camera_alt,
-                        size: 48,
-                        color: Colors.white,
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        'PhotoConnect',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Current Tab: ${_getCurrentTabName()}',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withOpacity(0.8),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _getCurrentPage(),
 
           // Glass Bottom Navigation Bar
           GlassBottomNavigationBar(
@@ -79,26 +39,22 @@ class _ClientHomePageState extends State<ClientHomePage> {
 
   Widget _buildBackgroundPattern() {
     return Positioned.fill(
-      child: CustomPaint(
-        painter: BackgroundPatternPainter(),
-      ),
+      child: CustomPaint(painter: BackgroundPatternPainter()),
     );
   }
 
-
-
-  Object _getCurrentTabName() {
+  Widget _getCurrentPage() {
     switch (_currentIndex) {
       case 0:
-        return HomePage();
+        return const HomePage();
       case 1:
-        return 'Bookings';
+        return const BookingsPage();
       case 2:
-        return 'Favorites';
+        return const FavoritesPage();
       case 3:
-        return 'Profile';
+        return const ProfilePage();
       default:
-        return 'Home';
+        return const HomePage();
     }
   }
 }
@@ -118,11 +74,7 @@ class BackgroundPatternPainter extends CustomPainter {
         final y = (size.height / 12) * j;
 
         // Draw circles
-        canvas.drawCircle(
-          Offset(x, y),
-          20,
-          paint,
-        );
+        canvas.drawCircle(Offset(x, y), 20, paint);
 
         // Draw lines
         if (i < 7) {
