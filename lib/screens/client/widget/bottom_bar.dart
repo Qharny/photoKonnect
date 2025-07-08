@@ -14,7 +14,8 @@ class GlassBottomNavigationBar extends StatefulWidget {
   });
 
   @override
-  State<GlassBottomNavigationBar> createState() => _GlassBottomNavigationBarState();
+  State<GlassBottomNavigationBar> createState() =>
+      _GlassBottomNavigationBarState();
 }
 
 class _GlassBottomNavigationBarState extends State<GlassBottomNavigationBar>
@@ -53,20 +54,12 @@ class _GlassBottomNavigationBarState extends State<GlassBottomNavigationBar>
       duration: Duration(milliseconds: 300),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.elasticOut,
-    ));
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
 
     _animationController.forward();
   }
@@ -136,7 +129,7 @@ class _GlassBottomNavigationBarState extends State<GlassBottomNavigationBar>
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(
                 _items.length,
-                    (index) => _buildNavItem(index),
+                (index) => _buildNavItem(index),
               ),
             ),
           ),
@@ -157,23 +150,18 @@ class _GlassBottomNavigationBarState extends State<GlassBottomNavigationBar>
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: isActive
-              ? Colors.white.withOpacity(0.2)
-              : Colors.transparent,
+          color: isActive ? Colors.white.withOpacity(0.2) : Colors.transparent,
           border: isActive
-              ? Border.all(
-            color: Colors.white.withOpacity(0.3),
-            width: 1,
-          )
+              ? Border.all(color: Colors.white.withOpacity(0.3), width: 1)
               : null,
           boxShadow: isActive
               ? [
-            BoxShadow(
-              color: Colors.white.withOpacity(0.1),
-              blurRadius: 8,
-              offset: Offset(0, 2),
-            ),
-          ]
+                  BoxShadow(
+                    color: Colors.white.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
+                  ),
+                ]
               : [],
         ),
         child: Column(
@@ -185,9 +173,7 @@ class _GlassBottomNavigationBarState extends State<GlassBottomNavigationBar>
                 isActive ? item.activeIcon : item.icon,
                 key: ValueKey(isActive),
                 size: 24,
-                color: isActive
-                    ? Colors.black
-                    : Colors.white.withOpacity(0.6),
+                color: isActive ? Colors.black : Colors.white.withOpacity(0.6),
               ),
             ),
             SizedBox(height: 4),
@@ -196,9 +182,7 @@ class _GlassBottomNavigationBarState extends State<GlassBottomNavigationBar>
               style: TextStyle(
                 fontSize: isActive ? 12 : 10,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-                color: isActive
-                    ? Colors.black
-                    : Colors.white.withOpacity(0.6),
+                color: isActive ? Colors.black : Colors.white.withOpacity(0.6),
               ),
               child: Text(
                 item.label,
