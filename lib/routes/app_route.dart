@@ -5,8 +5,6 @@ import 'package:photoconnect/screens/client/auth/login.dart';
 import 'package:photoconnect/screens/client/auth/signup.dart';
 import 'package:photoconnect/screens/client/client.dart';
 import 'package:photoconnect/screens/photographer/auth/login.dart';
-import 'package:photoconnect/theme/app_color.dart';
-import '../services/auth_service.dart';
 
 import '../screens/onboarding/onboarding_screen.dart';
 import '../screens/photographer/auth/signup.dart';
@@ -88,7 +86,6 @@ class AppRoutes {
       builder: (context) => const AuthLandingScreen(),
       animation: RouteAnimation.slideLeft,
       duration: const Duration(milliseconds: 400),
-      requiresAuth: true,
     ),
     photosignup: RouteConfig(
       path: photosignup,
@@ -111,61 +108,48 @@ class AppRoutes {
       path: clienthome,
       builder: (context) => ClientHomePage(),
       animation: RouteAnimation.slideRight,
-      requiresAuth: true,
     ),
     paymentAndBills: RouteConfig(
       path: paymentAndBills,
       builder: (context) => const BillsPaymentsScreen(),
       animation: RouteAnimation.slideLeft,
-      requiresAuth: true,
     ),
     results: RouteConfig(
       path: results,
       builder: (context) => const ResultsScreen(),
       animation: RouteAnimation.scale,
-      requiresAuth: true,
     ),
     lecturerAssessment: RouteConfig(
       path: lecturerAssessment,
       builder: (context) => const LecturerAssessmentScreen(),
       animation: RouteAnimation.slideDown,
-      requiresAuth: true,
     ),
     notification: RouteConfig(
       path: notification,
       builder: (context) => const NotificationPage(),
       animation: RouteAnimation.slideUp,
-      requiresAuth: true,
     ),
     profile: RouteConfig(
       path: profile,
       builder: (context) => const ProfilePage(),
       animation: RouteAnimation.slideRight,
-      requiresAuth: true,
     ),
     editProfile: RouteConfig(
       path: editProfile,
       builder: (context) => const EditProfilePage(),
       animation: RouteAnimation.slideLeft,
-      requiresAuth: true,
     ),
     mySettings: RouteConfig(
       path: mySettings,
       builder: (context) => const SettingsPage(),
       animation: RouteAnimation.rotation,
-      requiresAuth: true,
     ),
   };
 
   static Map<String, WidgetBuilder> get routes {
     return Map.fromEntries(
       _routeConfigs.entries.map(
-        (entry) => MapEntry(
-          entry.key,
-          entry.value.requiresAuth
-              ? (context) => AuthWrapper(child: entry.value.builder(context))
-              : entry.value.builder,
-        ),
+        (entry) => MapEntry(entry.key, entry.value.builder),
       ),
     );
   }
@@ -188,10 +172,6 @@ class AppRoutes {
       settings.arguments as BuildContext? ??
           NavigationService.navigatorKey.currentContext!,
     );
-
-    if (routeConfig.requiresAuth) {
-      page = AuthWrapper(child: page);
-    }
 
     return _createAnimatedRoute(
       builder: (context) => page,
@@ -412,112 +392,6 @@ class RotationRoute extends PageRouteBuilder {
   }
 }
 
-// Enhanced Authentication Wrapper with Loading Animation
-class AuthWrapper extends StatefulWidget {
-  final Widget child;
-
-  const AuthWrapper({super.key, required this.child});
-
-  @override
-  State<AuthWrapper> createState() => _AuthWrapperState();
-}
-
-class _AuthWrapperState extends State<AuthWrapper>
-    with TickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 1),
-      vsync: this,
-    );
-    _animation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-    _controller.repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: _checkAuthStatus(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AnimatedBuilder(
-                    animation: _animation,
-                    builder: (context, child) {
-                      return Transform.scale(
-                        scale: 0.8 + (_animation.value * 0.2),
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: AppColors.secondary,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: const Icon(
-                            Icons.lock_outline,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Verifying Authentication...',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.secondary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-
-        if (snapshot.data == true) {
-          return widget.child;
-        } else {
-          // Not authenticated, redirect to login
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushReplacementNamed(context, AppRoutes.authland);
-          });
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(color: Color(0xFF16a47e)),
-            ),
-          );
-        }
-      },
-    );
-  }
-
-  Future<bool> _checkAuthStatus() async {
-    // Simulate network delay
-    await Future.delayed(const Duration(seconds: 1));
-    return await AuthService.isLoggedIn();
-  }
-}
-
 // Example usage in main.dart
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -601,9 +475,8 @@ class ProfilePage extends StatelessWidget {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () async {
+              onPressed: () {
                 Navigator.of(context).pop();
-                await AuthService.signOut();
                 Navigator.of(context).pushReplacementNamed(AppRoutes.authland);
               },
               child: const Text('Logout', style: TextStyle(color: Colors.red)),
@@ -673,9 +546,8 @@ class SettingsPage extends StatelessWidget {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () async {
+              onPressed: () {
                 Navigator.of(context).pop();
-                await AuthService.signOut();
                 Navigator.of(context).pushReplacementNamed(AppRoutes.authland);
               },
               child: const Text('Logout', style: TextStyle(color: Colors.red)),

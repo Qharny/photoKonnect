@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+
 import '../routes/app_route.dart';
-import '../services/auth_service.dart';
-import '../utils/auth_utils.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,34 +13,15 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _checkAuthAndNavigate();
+    _navigateToMain();
   }
 
-  Future<void> _checkAuthAndNavigate() async {
+  Future<void> _navigateToMain() async {
     await Future.delayed(const Duration(seconds: 4));
 
-    // Debug: Print current auth state
-    await AuthUtils.printAuthState();
-
-    final isLoggedIn = await AuthService.isLoggedIn();
-    final isNewUser = await AuthService.isNewUser();
-    final userType = await AuthService.getUserType();
-
     if (mounted) {
-      if (isNewUser) {
-        Navigator.pushReplacementNamed(context, AppRoutes.onboard);
-      } else if (isLoggedIn) {
-        // Navigate based on user type
-        if (userType == 'client') {
-          Navigator.pushReplacementNamed(context, AppRoutes.clienthome);
-        } else if (userType == 'photographer') {
-          Navigator.pushReplacementNamed(context, AppRoutes.home);
-        } else {
-          Navigator.pushReplacementNamed(context, AppRoutes.home);
-        }
-      } else {
-        Navigator.pushReplacementNamed(context, AppRoutes.authland);
-      }
+      // Navigate directly to the main app without authentication checks
+      Navigator.pushReplacementNamed(context, AppRoutes.clienthome);
     }
   }
 
